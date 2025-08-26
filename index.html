@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="modal.css" />
+    <script type="module" src="script.js"></script>
+    <title>Pomodoro Dashboard</title>
+    <link rel="stylesheet" href="dashboard.css" />
+  </head>
+  <body class="page page--dashboard dark">
+    <main class="dashboard">
+      <!-- Sidebar / User section -->
+      <aside class="sidebar">
+        <div class="avatar">
+          <img src="avatar.png" alt="User Avatar" class="avatar__img" />
+        </div>
+        <p class="greeting">Welcome back,</p>
+        <h2 class="username">Alex Chen</h2>
+
+        <div class="stats">
+          <div class="stat">
+            <span class="stat__value" id="hours_complete">24h</span>
+            <span class="stat__label">Total time</span>
+          </div>
+          <div class="stat">
+            <span class="stat__value" id="todos_complete">42</span>
+            <span class="stat__label">Todos finished</span>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <section class="content">
+        <!-- Timers -->
+        <h3 class="section-title">Timers</h3>
+        <ul class="timers-scroll"> </ul>
+        <button class="button button--add--timer">＋ Add Timer</button>
+
+        <!-- Todos -->
+        <h3 class="section-title">Todos</h3>
+        <ul class="todo-list"> </ul>
+        <button class="button button--add--todo">＋ Add Todo</button>
+      </section>
+      <!-- Modal Overlay -->
+      <div class="modal-overlay hidden" id="new-timer-modal">
+        <!-- Modal Content -->
+        <div class="modal-content">
+          <h2 class="modal-title">Create New Timer</h2>
+          <form class="modal-form">
+            <div class="form-group">
+              <label for="timer-title" class="form-label">Title</label>
+              <input
+                type="text"
+                id="timer-title"
+                class="form-input"
+                placeholder="Enter timer title"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Time Left</label>
+              <input
+                type="text"
+                id="time-left"
+                class="form-input"
+                value="25:00"
+                readonly
+              />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Total Time</label>
+              <input
+                type="text"
+                id="total-time"
+                class="form-input"
+                value="25:00"
+                readonly
+              />
+            </div>
+
+            <button type="submit" class="btn-primary">Create Timer</button>
+          </form>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>

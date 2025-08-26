@@ -1,0 +1,247 @@
+/* ===============================
+   Base
+================================= */
+:root {
+  --color-bg-start: #ff7a18;
+  --color-bg-end: #af0069;
+  --color-card-bg: #ffffff;
+  --color-text: #222;
+  --color-text-light: #666;
+  --color-primary: #ff4d8d;
+  --color-primary-dark: #e63b7a;
+  --color-error: #d32f2f;
+
+  --radius-lg: 1rem;
+  --radius-sm: 0.5rem;
+  --shadow-lg: 0 8px 20px rgba(0, 0, 0, 0.15);
+  --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.08);
+  --font-body: "Inter", "Segoe UI", sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 25px;
+  font-family: var(--font-body);
+  color: var(--color-text);
+  background: linear-gradient(
+    135deg,
+    var(--color-bg-start),
+    var(--color-bg-end)
+  );
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+}
+
+/* ===============================
+   Layout
+================================= */
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  max-width: 1200px;
+  width: 100%;
+  margin: 2rem;
+  gap: 2rem;
+}
+
+.sidebar {
+  flex: 0 0 220px;
+  background: var(--color-card-bg);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.content {
+  flex: 1;
+  background: var(--color-card-bg);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  padding: 2rem;
+}
+
+/* ===============================
+   Sidebar
+================================= */
+.avatar {
+  margin-bottom: 1rem;
+}
+.avatar__img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  box-shadow: var(--shadow-sm);
+}
+
+.greeting {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--color-text-light);
+}
+
+.username {
+  margin: 0.3rem 0 1rem;
+}
+
+.stats {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.stat {
+  background: #f9f9f9;
+  border-radius: var(--radius-sm);
+  padding: 0.8rem;
+  box-shadow: var(--shadow-sm);
+}
+.stat__value {
+  display: block;
+  font-weight: 600;
+  font-size: 1.2rem;
+}
+.stat__label {
+  font-size: 0.8rem;
+  color: var(--color-text-light);
+}
+
+/* ===============================
+   Timers
+================================= */
+.section-title {
+  margin-top: 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--color-primary-dark);
+}
+
+.timers-scroll {
+  display: flex;
+  overflow-x: auto;
+  gap: 1rem;
+  margin: 1rem 0 2rem;
+  padding-bottom: 0.5rem;
+}
+
+.timer-card {
+  flex: 0 0 200px;
+  background: #f9f9f9;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: 1rem;
+  text-align: center;
+}
+.timer-card__title {
+  margin: 0 0 0.5rem;
+}
+.timer-card__time-left {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--color-primary-dark);
+}
+.timer-card__time-total {
+  font-size: 0.8rem;
+  color: var(--color-text-light);
+}
+
+/* ===============================
+   Todos
+================================= */
+.todo-list {
+  list-style: none;
+  margin: 1rem 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.todo-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 1rem;
+}
+
+.todo-item input[type="checkbox"] {
+  appearance: none;
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid var(--color-primary);
+  border-radius: 50%;
+  display: grid;
+  place-content: center;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.todo-item input[type="checkbox"]:checked {
+  background: var(--color-primary);
+  border-color: var(--color-primary-dark);
+}
+
+/* Add Todo button */
+.button--add--timer {
+  display: block;
+  margin: 2rem auto 0;
+  padding: 0.7rem 1.5rem;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: var(--color-primary);
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.25s;
+}
+.button--add--timer:hover {
+  background: var(--color-bg-start);
+}
+.button--add--todo {
+  display: block;
+  margin: 2rem auto 0;
+  padding: 0.7rem 1.5rem;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-start);
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.25s;
+}
+.button--add--todo:hover {
+  background: var(--color-primary-dark);
+}
+
+/* ===============================
+   Dark Mode
+================================= */
+body.dark {
+  --color-card-bg: #1f1f1f;
+  --color-text: #f3f3f3;
+  --color-text-light: #aaa;
+  --shadow-lg: 0 8px 20px rgba(0, 0, 0, 0.5);
+  --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+body.dark .sidebar,
+body.dark .content {
+  background: var(--color-card-bg);
+}
+
+body.dark .stat,
+body.dark .timer-card {
+  background: #2a2a2a;
+}
+
+body.dark .todo-item input[type="radio"] {
+  border-color: var(--color-primary);
+}
+body.dark .todo-item input[type="radio"]:checked {
+  background: var(--color-primary);
+}

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="load.css" />
+    <script type="module" src="load.js"></script>
+    <title>Create Local Account · Pomodoro</title>
+  </head>
+  <body class="page page--signup dark">
+    <header class="header">
+      <h1 class="header__title">Create your account</h1>
+      <p class="header__subtitle"
+        >Set up a local profile to save your Pomodoro progress.</p
+      >
+    </header>
+
+    <main class="main">
+      <section class="card card--signup">
+        <form
+          id="signup-form"
+          class="form form--signup"
+          action="/signup"
+          method="post"
+          enctype="multipart/form-data"
+          novalidate
+          aria-describedby="form-help"
+        >
+          <fieldset class="form__fieldset">
+            <legend class="form__legend">Profile</legend>
+
+            <!-- Avatar upload -->
+            <div class="form__group form__group--file">
+              <label for="avatar" class="form__label">Profile photo</label>
+              <input
+                class="form__input form__input--file"
+                type="file"
+                id="avatar"
+                name="avatar"
+                accept="image/*"
+                aria-describedby="avatar-hint"
+              />
+              <p id="avatar-hint" class="form__hint"
+                >JPG or PNG, recommended 512×512.</p
+              >
+
+              <!-- Optional static preview placeholder (no JS yet) -->
+              <figure class="avatar-preview" aria-hidden="true">
+                <div
+                  class="avatar-preview__frame"
+                  role="img"
+                  aria-label="Avatar preview placeholder"
+                ></div>
+                <figcaption class="avatar-preview__caption"
+                  >Preview appears here</figcaption
+                >
+              </figure>
+            </div>
+
+            <!-- Name -->
+            <div class="form__group">
+              <label for="name" class="form__label">Name</label>
+              <input
+                class="form__input"
+                type="text"
+                id="name"
+                name="name"
+                placeholder="e.g., Alex Chen"
+                autocomplete="name"
+                required
+                minlength="2"
+              />
+              <div
+                class="form__msg form__msg--error"
+                aria-live="polite"
+                data-for="name"
+              ></div>
+            </div>
+
+            <!-- Email -->
+            <div class="form__group">
+              <label for="email" class="form__label">Email</label>
+              <input
+                class="form__input"
+                type="email"
+                id="email"
+                name="email"
+                placeholder="you@example.com"
+                autocomplete="email"
+                inputmode="email"
+                required
+              />
+              <div
+                class="form__msg form__msg--error"
+                aria-live="polite"
+                data-for="email"
+              ></div>
+            </div>
+          </fieldset>
+
+          <fieldset class="form__fieldset">
+            <legend class="form__legend">Confirm</legend>
+
+            <!-- Terms checkbox (optional for local) -->
+            <div class="form__group form__group--checkbox">
+              <input
+                class="form__checkbox"
+                type="checkbox"
+                id="agree"
+                name="agree"
+                required
+              />
+              <label for="agree" class="form__label form__label--checkbox">
+                I agree to save this data locally on this device.
+              </label>
+              <div
+                class="form__msg form__msg--error"
+                aria-live="polite"
+                data-for="agree"
+              ></div>
+            </div>
+
+            <!-- Hidden fields (hooks for your app) -->
+            <input type="hidden" name="source" value="local-onboarding" />
+            <input type="hidden" name="intent" value="create-account" />
+          </fieldset>
+
+          <div class="form__actions">
+            <button type="submit" class="button button--primary"
+              >Create account</button
+            >
+            <button type="reset" class="button button--ghost reset"
+              >Clear</button
+            >
+          </div>
+
+          <p id="form-help" class="form__help">
+            Your profile is stored locally. You can change it anytime in
+            Settings.
+          </p>
+        </form>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <small class="footer__note">Pomodoro • Local mode</small>
+    </footer>
+  </body>
+</html>
