@@ -1,4 +1,7 @@
 const addTimerBtn = document.querySelector(".button--add--timer");
+let user = null;
+let timers = [];
+let todos = [];
 
 const initialize = () => {
   try {
@@ -20,16 +23,16 @@ const initialize = () => {
 };
 
 const loadApp = (userObj) => {
-  const user = userObj.user;
-  const timers = userObj.timers;
-  const todos = userObj.todos;
+  user = userObj.user;
+  timers = userObj.timers;
+  todos = userObj.todos;
 
-  showUserData(user);
-  processTodos(todos);
-  processTimers(timers);
+  showUserData();
+  processTodos();
+  processTimers();
 };
 
-const showUserData = (user) => {
+const showUserData = () => {
   const avatarBox = document.querySelector(".avatar__img");
   const nameHeading = document.querySelector(".username");
   const todosComplete = document.getElementById("todos_complete");
@@ -41,34 +44,62 @@ const showUserData = (user) => {
   hoursComplete.innerHTML = `${user.totalProductiveTime}H`;
 };
 
-const processTodos = (todos) => {
+const processTodos = () => {
   if (todos.length < 1) {
     return;
   } else {
-    paintTodos(todos);
+    paintTodos();
   }
 };
 
-const processTimers = (timers) => {
-  if (timers.length < 1) {
-    return;
-  } else {
-    paintTimers(timers);
-  }
+const processTimers = () => {
+  setInterval(() => {
+    paintTimers();
+  }, 1000);
 };
 
-const paintTimers = (timers) => {
+const formatTime = (seconds) => {
+  let minutes = Math.floor(seconds / 60);
+  let secs = seconds % 60;
+  return `${minutes}:${secs.toString().padStart(2, "0")}`;
+};
+
+const paintTimers = () => {
   const timerBox = document.querySelector(".timers-scroll");
 
   timers.forEach((timer) => {
+    const totalTime = formatTime(timer.totalTime);
+
+    const timeLeft = formatTime(timer.timeLeft);
+
     const timerHtml = `
-       <article class="timer-card">
-            <h4 class="timer-card__title">Focus</h4>
-            <p class="timer-card__time-left">12:32 left</p>
-            <p class="timer-card__time-total">/ 25:00 total</p>
+       <article class="timer-card ${timer.paused ? "paused" : "going"}">
+            <h4 class="timer-card__title">${timer.title}</h4>
+            <p class="timer-card__time-left">${timeLeft} left</p>
+            <p class="timer-card__time-total">${totalTime} total</p>
        </article>
     `;
     timerBox.innerHTML += timerHtml;
+
+    if (!timer.paused) {
+      const newTimers = timers.map((t) => {
+        if (t.id === timer.id) {
+          return {
+            ...t,
+            timeLeft: t.timeLeft - 1,
+          };
+        } else {
+          return t;
+        }
+      });
+
+      timers = newTimers;
+
+      localStorage.setItem(
+        "user",
+        JSON.stringify({ ...user, timers: newTimers })
+      );
+    }
   });
 };
 
@@ -108,5 +139,33 @@ if (addTimerBtn) {
         modalOverlay.removeEventListener("click", this);
       }
     });
+
+    const createTimerBtn = document.getElementById("create-timer-btn");
+
+    createTimerBtn.addEventListener("click", (e) =>
+      createTimer(e, modalOverlay)
+    );
   });
 }
+
+const createTimer = (e, modalOverlay) => {
+  e.preventDefault();
+
+  const title = document.getElementById("timer-title").value;
+
+  const newTimer = {
+    id: timers.length,
+    title: title,
+    totalTime: 90000,
+    timeLeft: 90000,
+    paused: true,
+  };
+
+  const newTimers = [...timers, newTimer];
+
+  localStorage.setItem("user", JSON.stringify({ ...user, timers: newTimers }));
+
+  modalOverlay.classList.remove("active");
+
+  paintTimers(newTimers);
+};
