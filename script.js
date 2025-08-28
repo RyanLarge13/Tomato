@@ -248,7 +248,7 @@ const setUpApp = () => {
     "This is where we will set up the application for a new user or if localStorage failed for some reason"
   );
 
-  window.location.href = "./load.html";
+  window.location.href = "/Tomato/load.html";
 };
 
 window.addEventListener("load", initialize);
