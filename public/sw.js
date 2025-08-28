@@ -8,8 +8,8 @@ const urlsToCache = [
   "style.css",
   "script.js",
   "modal.css",
-  "public/icons/192x192.png",
-  "public/icons/512x512.png",
+  "icons/192x192.png",
+  "icons/512x512.png",
 ];
 
 self.addEventListener("install", (event) => {
