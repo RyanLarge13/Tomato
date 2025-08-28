@@ -12,7 +12,7 @@ let timerPaintInterval = null;
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker
-      .register("/public/sw.js")
+      .register("public/sw.js")
       .then(() => console.log("Service Worker registered"));
   });
 }
@@ -248,7 +248,7 @@ const setUpApp = () => {
     "This is where we will set up the application for a new user or if localStorage failed for some reason"
   );
 
-  window.location.href = "/Tomato/load.html";
+  window.location.href = "load.html";
 };
 
 window.addEventListener("load", initialize);

@@ -1,13 +1,13 @@
 const CACHE_NAME = "pomodoro-cache-v1";
 const urlsToCache = [
   "/",
-  "/index.html",
-  "/load.html",
-  "/load.css",
-  "/load.js",
-  "/style.css",
-  "/script.js",
-  "/modal.css",
+  "index.html",
+  "load.html",
+  "load.css",
+  "load.js",
+  "style.css",
+  "script.js",
+  "modal.css",
 ];
 
 self.addEventListener("install", (event) => {
