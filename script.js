@@ -12,7 +12,7 @@ let timerPaintInterval = null;
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker
-      .register("Tomato/public/sw.js")
+      .register("/public/sw.js")
       .then(() => console.log("Service Worker registered"));
   });
 }
