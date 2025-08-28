@@ -81,6 +81,7 @@ body {
   height: 80px;
   border-radius: 50%;
   box-shadow: var(--shadow-sm);
+  object-fit: cover;
 }
 
 .greeting {

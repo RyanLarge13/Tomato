@@ -13,11 +13,12 @@ const initialize = () => {
     } catch (err) {
       console.log("Error parsing user JSON");
       console.log(err);
+      // return;
       setUpApp();
-      return;
     }
   } catch (err) {
     console.log("User most likely does not exist. Loading setup");
+    // return;
     setUpApp();
   }
 };
@@ -53,6 +54,7 @@ const processTodos = () => {
 };
 
 const processTimers = () => {
+  paintTimers();
   setInterval(() => {
     paintTimers();
   }, 1000);
@@ -66,6 +68,7 @@ const formatTime = (seconds) => {
 
 const paintTimers = () => {
   const timerBox = document.querySelector(".timers-scroll");
+  timerBox.innerHTML = "";
 
   timers.forEach((timer) => {
     const totalTime = formatTime(timer.totalTime);
@@ -73,12 +76,15 @@ const paintTimers = () => {
     const timeLeft = formatTime(timer.timeLeft);
 
     const timerHtml = `
-       <article class="timer-card ${timer.paused ? "paused" : "going"}">
+       <article class="timer-card ${timer.paused ? "paused" : "going"}" id="${
+      timer.id
+    }">
             <h4 class="timer-card__title">${timer.title}</h4>
             <p class="timer-card__time-left">${timeLeft} left</p>
             <p class="timer-card__time-total">${totalTime} total</p>
        </article>
     `;
+
     timerBox.innerHTML += timerHtml;
 
     if (!timer.paused) {
@@ -97,9 +103,34 @@ const paintTimers = () => {
 
       localStorage.setItem(
         "user",
-        JSON.stringify({ ...user, timers: newTimers })
+        JSON.stringify({ user, todos, timers: newTimers })
       );
     }
+  });
+
+  timerBox.childNodes.forEach((node) => {
+    node.addEventListener("click", (e) => {
+      const id = Number(e.currentTarget.id);
+      const newTimers = timers.map((t) => {
+        if (t.id === id) {
+          return {
+            ...t,
+            paused: !t.paused,
+          };
+        } else {
+          return t;
+        }
+      });
+
+      timers = newTimers;
+
+      localStorage.setItem(
+        "user",
+        JSON.stringify({ user, todos, timers: newTimers })
+      );
+
+      paintTimers();
+    });
   });
 };
 
@@ -127,25 +158,25 @@ const setUpApp = () => {
 
 window.addEventListener("load", initialize);
 
-if (addTimerBtn) {
-  addTimerBtn.addEventListener("click", () => {
-    const modalOverlay = document.querySelector(".modal-overlay");
-    modalOverlay.classList.add("active");
+const modalShowForTimer = (e) => {
+  const modalOverlay = document.querySelector(".modal-overlay");
+  modalOverlay.classList.add("active");
 
-    modalOverlay.addEventListener("click", (e) => {
-      if (e.target.id === "new-timer-modal") {
-        modalOverlay.classList.remove("active");
+  modalOverlay.addEventListener("click", (e) => {
+    if (e.target.id === "new-timer-modal") {
+      modalOverlay.classList.remove("active");
 
-        modalOverlay.removeEventListener("click", this);
-      }
-    });
-
-    const createTimerBtn = document.getElementById("create-timer-btn");
-
-    createTimerBtn.addEventListener("click", (e) =>
-      createTimer(e, modalOverlay)
-    );
+      modalOverlay.removeEventListener("click", modalShowForTimer);
+    }
   });
+
+  const createTimerBtn = document.getElementById("create-timer-btn");
+
+  createTimerBtn.addEventListener("click", (e) => createTimer(e, modalOverlay));
+};
+
+if (addTimerBtn) {
+  addTimerBtn.addEventListener("click", modalShowForTimer);
 }
 
 const createTimer = (e, modalOverlay) => {
@@ -156,16 +187,22 @@ const createTimer = (e, modalOverlay) => {
   const newTimer = {
     id: timers.length,
     title: title,
-    totalTime: 90000,
-    timeLeft: 90000,
-    paused: true,
+    totalTime: 1500,
+    timeLeft: 1500,
+    paused: false,
   };
 
   const newTimers = [...timers, newTimer];
 
-  localStorage.setItem("user", JSON.stringify({ ...user, timers: newTimers }));
+  localStorage.setItem(
+    "user",
+    JSON.stringify({ user, todos, timers: newTimers })
+  );
 
   modalOverlay.classList.remove("active");
+  modalOverlay.removeEventListener("click", modalShowForTimer);
 
-  paintTimers(newTimers);
+  timers = newTimers;
+
+  paintTimers();
 };
