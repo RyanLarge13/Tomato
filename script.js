@@ -1,7 +1,21 @@
+const modalTimerOverlay = document.getElementById("new-timer-modal");
+const modalTodoOverlay = document.getElementById("new-todo-modal");
+const createTimerBtn = document.getElementById("create-timer-btn");
 const addTimerBtn = document.querySelector(".button--add--timer");
+const createTodoBtn = document.getElementById("create-todo-btn");
+const addTodoBtn = document.querySelector(".button--add--todo");
 let user = null;
 let timers = [];
 let todos = [];
+let timerPaintInterval = null;
+
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker
+      .register("/public/sw.js")
+      .then(() => console.log("Service Worker registered"));
+  });
+}
 
 const initialize = () => {
   try {
@@ -42,7 +56,7 @@ const showUserData = () => {
   nameHeading.innerHTML = user.name;
   avatarBox.setAttribute("src", user.avatar);
   todosComplete.innerHTML = `${user.todosComplete}`;
-  hoursComplete.innerHTML = `${user.totalProductiveTime}H`;
+  hoursComplete.innerHTML = `${formatTotalTime(user.totalProductiveTime)}`;
 };
 
 const processTodos = () => {
@@ -66,9 +80,16 @@ const formatTime = (seconds) => {
   return `${minutes}:${secs.toString().padStart(2, "0")}`;
 };
 
+const formatTotalTime = (seconds) => {
+  let hours = Math.floor(seconds / 60 / 60);
+  let minutes = Math.floor(seconds / 60);
+  let secs = seconds % 60;
+  return `${hours}:${minutes}:${secs.toString().padStart(2, "0")}`;
+};
+
 const paintTimers = () => {
   const timerBox = document.querySelector(".timers-scroll");
-  timerBox.innerHTML = "";
+  let newHtml = "";
 
   timers.forEach((timer) => {
     const totalTime = formatTime(timer.totalTime);
@@ -76,20 +97,46 @@ const paintTimers = () => {
     const timeLeft = formatTime(timer.timeLeft);
 
     const timerHtml = `
-       <article class="timer-card ${timer.paused ? "paused" : "going"}" id="${
+    <article class="timer-card ${timer.paused ? "paused" : "going"}" id="${
       timer.id
     }">
-            <h4 class="timer-card__title">${timer.title}</h4>
-            <p class="timer-card__time-left">${timeLeft} left</p>
-            <p class="timer-card__time-total">${totalTime} total</p>
-       </article>
+    <h4 class="timer-card__title">${timer.title}</h4>
+    ${timer.break ? `<p class="break-time-text">Break Time</p>` : ""}
+    <p class="timer-card__time-left">${timeLeft} left</p>
+    <p class="timer-card__time-total">${totalTime} total</p>
+    </article>
     `;
 
-    timerBox.innerHTML += timerHtml;
+    newHtml += timerHtml;
 
     if (!timer.paused) {
       const newTimers = timers.map((t) => {
         if (t.id === timer.id) {
+          if (t.timeLeft - 1 < 0) {
+            if (!t.break) {
+              user = {
+                ...user,
+                totalProductiveTime: user.totalProductiveTime + t.totalTime,
+              };
+              return {
+                ...t,
+                totalTime: 300,
+                timeLeft: 300,
+                break: true,
+              };
+            } else {
+              return {
+                ...t,
+                totalTime: 1500,
+                timeLeft: 1500,
+                break: false,
+              };
+            }
+          }
+          user = {
+            ...user,
+            totalProductiveTime: user.totalProductiveTime + 1,
+          };
           return {
             ...t,
             timeLeft: t.timeLeft - 1,
@@ -105,8 +152,12 @@ const paintTimers = () => {
         "user",
         JSON.stringify({ user, todos, timers: newTimers })
       );
+
+      showUserData();
     }
   });
+
+  timerBox.innerHTML = newHtml;
 
   timerBox.childNodes.forEach((node) => {
     node.addEventListener("click", (e) => {
@@ -116,6 +167,7 @@ const paintTimers = () => {
           return {
             ...t,
             paused: !t.paused,
+            timeLeft: t.paused ? t.timeLeft : t.timeLeft + 1,
           };
         } else {
           return t;
@@ -134,17 +186,60 @@ const paintTimers = () => {
   });
 };
 
-const paintTodos = (todos) => {
+const paintTodos = () => {
   const todoBox = document.querySelector(".todo-list");
+  todoBox.innerHTML = "";
+
   todos.forEach((todo) => {
     const todoHtml = `
-      <li class="todo-item">
-            <input type="checkbox" checked="${todo.checked}" id="todo1" name="todo" />
+      <li class="todo-item" id="${todo.id}">
+            <input type="checkbox" ${
+              todo.complete ? "checked" : ""
+            } name="todo" />
             <label for="todo1">${todo.text}</label>
       </li>
     `;
 
     todoBox.innerHTML += todoHtml;
+  });
+
+  let changed = 0;
+
+  todoBox.childNodes.forEach((node) => {
+    node.addEventListener("change", () => {
+      const newTodos = todos.map((t) => {
+        if (t.id === node.id) {
+          if (t.complete === false) {
+            changed = 1;
+          } else {
+            changed = -1;
+          }
+          return {
+            ...t,
+            complete: !t.complete,
+          };
+        } else {
+          return t;
+        }
+      });
+
+      todos = newTodos;
+
+      const newUser = { ...user, todosComplete: user.todosComplete + changed };
+
+      user = newUser;
+
+      localStorage.setItem(
+        "user",
+        JSON.stringify({
+          user: newUser,
+          todos: newTodos,
+          timers,
+        })
+      );
+
+      showUserData();
+    });
   });
 };
 
@@ -153,36 +248,36 @@ const setUpApp = () => {
     "This is where we will set up the application for a new user or if localStorage failed for some reason"
   );
 
-  window.location.href = `${window.location.origin}/load.html`
+  window.location.href = `${window.location.origin}/load.html`;
 };
 
 window.addEventListener("load", initialize);
 
 const modalShowForTimer = (e) => {
-  const modalOverlay = document.querySelector(".modal-overlay");
-  modalOverlay.classList.add("active");
-
-  const createTimerBtn = document.getElementById("create-timer-btn");
-
-  createTimerBtn.addEventListener("click", (e) => createTimer(e, modalOverlay));
-  
-  modalOverlay.addEventListener("click", (e) => {
-    if (e.target.id === "new-timer-modal") {
-      modalOverlay.classList.remove("active");
-
-      modalOverlay.removeEventListener("click", modalShowForTimer);
-      
-      createTimerBtn.removeEventListener("click", createTimer)
-    }
-  });
-
+  modalTimerOverlay.classList.add("active");
 };
 
-if (addTimerBtn) {
-  addTimerBtn.addEventListener("click", modalShowForTimer);
-}
+const createTodo = (e) => {
+  e.preventDefault();
 
-const createTimer = (e, modalOverlay) => {
+  const todoText = document.getElementById("todo-title").value;
+
+  const newTodo = {
+    id: `todo-${todos.length}`,
+    text: todoText,
+    complete: false,
+  };
+
+  todos.push(newTodo);
+
+  localStorage.setItem("user", JSON.stringify({ user, timers, todos }));
+
+  modalTodoOverlay.classList.remove("active");
+
+  paintTodos();
+};
+
+const createTimer = (e) => {
   e.preventDefault();
 
   const title = document.getElementById("timer-title").value;
@@ -192,7 +287,8 @@ const createTimer = (e, modalOverlay) => {
     title: title,
     totalTime: 1500,
     timeLeft: 1500,
-    paused: false,
+    paused: true,
+    break: false,
   };
 
   const newTimers = [...timers, newTimer];
@@ -202,10 +298,43 @@ const createTimer = (e, modalOverlay) => {
     JSON.stringify({ user, todos, timers: newTimers })
   );
 
-  modalOverlay.classList.remove("active");
-  modalOverlay.removeEventListener("click", modalShowForTimer);
+  modalTimerOverlay.classList.remove("active");
 
   timers = newTimers;
 
   paintTimers();
 };
+
+if (addTimerBtn) {
+  addTimerBtn.addEventListener("click", modalShowForTimer);
+}
+
+if (createTimerBtn) {
+  createTimerBtn.addEventListener("click", createTimer);
+}
+
+if (modalTimerOverlay) {
+  modalTimerOverlay.addEventListener("click", (e) => {
+    if (e.target.id === "new-timer-modal") {
+      modalTimerOverlay.classList.remove("active");
+    }
+  });
+}
+
+if (modalTodoOverlay) {
+  modalTodoOverlay.addEventListener("click", (e) => {
+    if (e.target.id === "new-todo-modal") {
+      modalTodoOverlay.classList.remove("active");
+    }
+  });
+}
+
+if (addTodoBtn) {
+  addTodoBtn.addEventListener("click", () =>
+    modalTodoOverlay.classList.add("active")
+  );
+}
+
+if (createTodoBtn) {
+  createTodoBtn.addEventListener("click", createTodo);
+}

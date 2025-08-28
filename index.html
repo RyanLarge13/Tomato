@@ -1,10 +1,18 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="modal.css" />
+    <link rel="manifest" href="/public/manifest.json" />
+    <link
+      rel="shortcut icon"
+      href="public//icons/192x192.png"
+      type="image/x-icon"
+    />
+    <meta name="theme-color" content="#ff7a18" />
+    <link rel="apple-touch-icon" href="/public/icons/192x192.png" />
     <script type="module" src="script.js"></script>
     <title>Pomodoro Dashboard</title>
     <link rel="stylesheet" href="dashboard.css" />
@@ -88,8 +96,9 @@
           </form>
         </div>
       </div>
+
       <!-- Modal OverlayTodo -->
-      <div class="modal-overlay-todo hidden" id="new-todo-modal">
+      <div class="modal-overlay hidden" id="new-todo-modal">
         <!-- Modal Content -->
         <div class="modal-content">
           <h2 class="modal-title">Create New Todo</h2>
@@ -98,37 +107,14 @@
               <label for="timer-title" class="form-label">Title</label>
               <input
                 type="text"
-                id="timer-title"
+                id="todo-title"
                 class="form-input"
                 placeholder="Enter timer title"
                 required
               />
             </div>
-
-            <div class="form-group">
-              <label class="form-label">Time Left</label>
-              <input
-                type="text"
-                id="time-left"
-                class="form-input"
-                value="25:00"
-                readonly
-              />
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">Total Time</label>
-              <input
-                type="text"
-                id="total-time"
-                class="form-input"
-                value="25:00"
-                readonly
-              />
-            </div>
-
-            <button type="submit" class="btn-primary" id="create-timer-btn">
-              Create Timer
+            <button type="submit" class="btn-primary" id="create-todo-btn">
+              Create Todo
             </button>
           </form>
         </div>
