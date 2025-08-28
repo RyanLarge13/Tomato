@@ -98,7 +98,7 @@ const storeUserInApp = (name, email) => {
 
     localStorage.setItem("user", localStorageUser);
 
-    window.location.href = "/";
+    window.location.href = "Tomato/index.html";
   } catch (err) {
     console.log(`Error loading localStorage. ${err}`);
   }
