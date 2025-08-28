@@ -98,7 +98,7 @@ const storeUserInApp = (name, email) => {
 
     localStorage.setItem("user", localStorageUser);
 
-    window.location.href = "http://127.0.0.1:5500/index.html";
+    window.location.href = `${window.location.origin}/index.html`;
   } catch (err) {
     console.log(`Error loading localStorage. ${err}`);
   }

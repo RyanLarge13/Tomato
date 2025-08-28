@@ -153,7 +153,7 @@ const setUpApp = () => {
     "This is where we will set up the application for a new user or if localStorage failed for some reason"
   );
 
-  window.location.href = "http://127.0.0.1:5500/load.html";
+  window.location.href = `${window.location.origin}/load.html`
 };
 
 window.addEventListener("load", initialize);
@@ -162,17 +162,20 @@ const modalShowForTimer = (e) => {
   const modalOverlay = document.querySelector(".modal-overlay");
   modalOverlay.classList.add("active");
 
+  const createTimerBtn = document.getElementById("create-timer-btn");
+
+  createTimerBtn.addEventListener("click", (e) => createTimer(e, modalOverlay));
+  
   modalOverlay.addEventListener("click", (e) => {
     if (e.target.id === "new-timer-modal") {
       modalOverlay.classList.remove("active");
 
       modalOverlay.removeEventListener("click", modalShowForTimer);
+      
+      createTimerBtn.removeEventListener("click", createTimer)
     }
   });
 
-  const createTimerBtn = document.getElementById("create-timer-btn");
-
-  createTimerBtn.addEventListener("click", (e) => createTimer(e, modalOverlay));
 };
 
 if (addTimerBtn) {

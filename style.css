@@ -28,7 +28,7 @@
 
 body {
   margin: 0;
-  padding: 25px;
+  padding: 10px;
   font-family: var(--font-body);
   color: var(--color-text);
   background: linear-gradient(
@@ -49,8 +49,8 @@ body {
   flex-direction: column;
   max-width: 1200px;
   width: 100%;
-  margin: 2rem;
-  gap: 2rem;
+  margin: 1rem;
+  gap: 1rem;
 }
 
 .sidebar {
@@ -125,12 +125,16 @@ body {
   color: var(--color-primary-dark);
 }
 
+.todo-title {
+  margin-top: 50px;
+}
+
 .timers-scroll {
   display: flex;
   overflow-x: auto;
   gap: 1rem;
   margin: 1rem 0 2rem;
-  padding-bottom: 0.5rem;
+  padding: 0.5em;
 }
 
 .timer-card {

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
@@ -35,12 +35,12 @@
       <section class="content">
         <!-- Timers -->
         <h3 class="section-title">Timers</h3>
-        <ul class="timers-scroll"> </ul>
+        <ul class="timers-scroll"></ul>
         <button class="button button--add--timer">＋ Add Timer</button>
 
         <!-- Todos -->
-        <h3 class="section-title">Todos</h3>
-        <ul class="todo-list"> </ul>
+        <h3 class="section-title todo-title">Todos</h3>
+        <ul class="todo-list"></ul>
         <button class="button button--add--todo">＋ Add Todo</button>
       </section>
       <!-- Modal Overlay -->
@@ -82,9 +82,54 @@
               />
             </div>
 
-            <button type="submit" class="btn-primary" id="create-timer-btn"
-              >Create Timer</button
-            >
+            <button type="submit" class="btn-primary" id="create-timer-btn">
+              Create Timer
+            </button>
+          </form>
+        </div>
+      </div>
+      <!-- Modal OverlayTodo -->
+      <div class="modal-overlay-todo hidden" id="new-todo-modal">
+        <!-- Modal Content -->
+        <div class="modal-content">
+          <h2 class="modal-title">Create New Todo</h2>
+          <form class="modal-form">
+            <div class="form-group">
+              <label for="timer-title" class="form-label">Title</label>
+              <input
+                type="text"
+                id="timer-title"
+                class="form-input"
+                placeholder="Enter timer title"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Time Left</label>
+              <input
+                type="text"
+                id="time-left"
+                class="form-input"
+                value="25:00"
+                readonly
+              />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Total Time</label>
+              <input
+                type="text"
+                id="total-time"
+                class="form-input"
+                value="25:00"
+                readonly
+              />
+            </div>
+
+            <button type="submit" class="btn-primary" id="create-timer-btn">
+              Create Timer
+            </button>
           </form>
         </div>
       </div>
