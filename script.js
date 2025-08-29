@@ -100,6 +100,7 @@ const paintTimers = () => {
     <article class="timer-card ${timer.paused ? "paused" : "going"}" id="${
       timer.id
     }">
+       <button class="remove-timer-btn">ㄨ</button>
       <h4 class="timer-card__title">${timer.title}</h4>
       ${timer.break ? `<p class="break-time-text">Break Time</p>` : ""}
       <p class="timer-card__time-left">${timeLeft} left</p>
@@ -160,6 +161,30 @@ const paintTimers = () => {
   });
 
   timerBox.innerHTML = newHtml;
+
+  const allRemoveBtns = Array.from(
+    document.querySelectorAll(".remove-timer-btn")
+  );
+  allRemoveBtns.forEach((b) => {
+    b.addEventListener("click", () => {
+      const timerId = Number(b.parentElement.id);
+      console.log(timerId);
+      const newTimers = timers.filter((t) => t.id !== timerId);
+
+      timers = newTimers;
+
+      localStorage.setItem(
+        "user",
+        JSON.stringify({
+          user,
+          todos,
+          timers: newTimers,
+        })
+      );
+
+      paintTimers();
+    });
+  });
 
   timerBox.childNodes.forEach((node) => {
     node.addEventListener("click", (e) => {
@@ -283,6 +308,7 @@ const paintTodos = () => {
               todo.complete ? "checked" : ""
             } name="todo" />
             <label for="todo1">${todo.text}</label>
+            <button class="remove-todo-btn"><p>ㄨ</p></button>
       </li>
     `;
 
@@ -290,6 +316,30 @@ const paintTodos = () => {
   });
 
   let changed = 0;
+
+  const removalMarks = Array.from(
+    document.querySelectorAll(".remove-todo-btn")
+  );
+  removalMarks.forEach((mark) =>
+    mark.addEventListener("click", () => {
+      const todoId = mark.parentElement.id;
+      const newTodos = todos.filter((t) => t.id !== todoId);
+
+      todos = newTodos;
+
+      localStorage.setItem(
+        "user",
+        JSON.stringify({
+          user,
+          todos: newTodos,
+          timers,
+        })
+      );
+
+      displayCompleteAllBtn();
+      paintTodos();
+    })
+  );
 
   todoBox.childNodes.forEach((node) => {
     node.addEventListener("change", () => {

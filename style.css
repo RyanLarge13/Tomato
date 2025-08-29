@@ -149,8 +149,22 @@ body {
   box-shadow: var(--shadow-sm);
   padding: 1rem;
   text-align: center;
-  cursor: pointer;
   transition: 250ms ease-in-out;
+  position: relative;
+}
+.remove-timer-btn {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  color: #f3f3f3;
+  transition: 250ms ease-in-out;
+  cursor: pointer;
+}
+.remove-timer-btn:hover {
+  color: #d32f2f;
 }
 .timer-card.paused {
   box-shadow: var(--shadow-sm-paused);
@@ -190,11 +204,14 @@ body {
 }
 .restart-btn {
   background-color: var(--color-primary-dark);
+  cursor: pointer;
 }
 .btn-paused {
+  cursor: pointer;
   background-color: var(--color-bg-start);
 }
 .btn-going {
+  cursor: pointer;
   background-color: #6ef39a;
 }
 .todo-btn-container {
@@ -221,6 +238,7 @@ Todos
   align-items: center;
   gap: 0.6rem;
   font-size: 1rem;
+  cursor: pointer;
 }
 
 .todo-item input[type="checkbox"] {
@@ -269,6 +287,22 @@ Todos
   font-size: 1rem;
   cursor: pointer;
   transition: background 0.25s;
+}
+
+.remove-todo-btn {
+  background-color: transparent;
+  border: none;
+  outline: none;
+  color: #f3f3f3;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  transition: 250ms ease-in-out;
+  cursor: pointer;
+}
+
+.remove-todo-btn:hover {
+  color: #d32f2f;
 }
 /* ===============================
 Dark Mode
