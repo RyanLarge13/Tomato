@@ -3,7 +3,7 @@ const modalTodoOverlay = document.getElementById("new-todo-modal");
 const createTimerBtn = document.getElementById("create-timer-btn");
 const addTimerBtn = document.querySelector(".button--add--timer");
 const createTodoBtn = document.getElementById("create-todo-btn");
-const addTodoBtn = document.querySelector(".button--add--todo");
+let addTodoBtn = document.querySelector(".button--add--todo");
 let user = null;
 let timers = [];
 let todos = [];
@@ -100,10 +100,16 @@ const paintTimers = () => {
     <article class="timer-card ${timer.paused ? "paused" : "going"}" id="${
       timer.id
     }">
-    <h4 class="timer-card__title">${timer.title}</h4>
-    ${timer.break ? `<p class="break-time-text">Break Time</p>` : ""}
-    <p class="timer-card__time-left">${timeLeft} left</p>
-    <p class="timer-card__time-total">${totalTime} total</p>
+      <h4 class="timer-card__title">${timer.title}</h4>
+      ${timer.break ? `<p class="break-time-text">Break Time</p>` : ""}
+      <p class="timer-card__time-left">${timeLeft} left</p>
+      <p class="timer-card__time-total">${totalTime} total</p>
+      <div class="timer-card__control-container">
+        <button class="timer-card__btn restart-btn" id="reset">↺</button>
+        <button class="timer-card__btn control-btn ${
+          timer.paused ? "btn-paused" : "btn-going"
+        }" id="play">${timer.paused ? "▶" : "❚❚"}</button>
+      </div>
     </article>
     `;
 
@@ -114,10 +120,6 @@ const paintTimers = () => {
         if (t.id === timer.id) {
           if (t.timeLeft - 1 < 0) {
             if (!t.break) {
-              user = {
-                ...user,
-                totalProductiveTime: user.totalProductiveTime + t.totalTime,
-              };
               return {
                 ...t,
                 totalTime: 300,
@@ -162,23 +164,56 @@ const paintTimers = () => {
   timerBox.childNodes.forEach((node) => {
     node.addEventListener("click", (e) => {
       const id = Number(e.currentTarget.id);
-      const newTimers = timers.map((t) => {
-        if (t.id === id) {
-          return {
-            ...t,
-            paused: !t.paused,
-            timeLeft: t.paused ? t.timeLeft : t.timeLeft + 1,
-          };
-        } else {
-          return t;
-        }
-      });
+      const childElementId = e.target.id;
+
+      let newTimers;
+
+      if (childElementId !== "play" && childElementId !== "reset") {
+        return;
+      }
+
+      if (childElementId === "play") {
+        newTimers = timers.map((t) => {
+          if (t.id === id) {
+            user = {
+              ...user,
+              totalProductiveTime: t.paused
+                ? user.totalProductiveTime
+                : user.totalProductiveTime - 1,
+            };
+            return {
+              ...t,
+              paused: !t.paused,
+              timeLeft: t.paused ? t.timeLeft : t.timeLeft + 1,
+            };
+          } else {
+            return t;
+          }
+        });
+      }
+
+      if (childElementId === "reset") {
+        newTimers = timers.map((t) => {
+          if (t.id === id) {
+            return {
+              ...t,
+              timeLeft: t.totalTime,
+            };
+          } else {
+            return t;
+          }
+        });
+      }
 
       timers = newTimers;
 
       localStorage.setItem(
         "user",
-        JSON.stringify({ user, todos, timers: newTimers })
+        JSON.stringify({
+          user,
+          todos,
+          timers: newTimers,
+        })
       );
 
       paintTimers();
@@ -186,9 +221,60 @@ const paintTimers = () => {
   });
 };
 
+const displayCompleteAllBtn = () => {
+  const btnContainer = document.querySelector(".todo-btn-container");
+
+  let anyCompleted = false;
+
+  todos.forEach((t) => {
+    if (t.complete) {
+      anyCompleted = true;
+    }
+  });
+
+  console.log(anyCompleted);
+
+  if (anyCompleted) {
+    btnContainer.innerHTML = `
+    <button class="button button--clear--todo">Clear Completed</button>
+       <button class="button button--add--todo">＋ Add Todo</button>
+    `;
+
+    const clearCompletedBtn = document.querySelector(".button--clear--todo");
+
+    clearCompletedBtn.addEventListener("click", () => {
+      const newTodos = todos.filter((t) => !t.complete);
+      todos = newTodos;
+
+      localStorage.setItem(
+        "user",
+        JSON.stringify({
+          user: user,
+          todos: newTodos,
+          timers,
+        })
+      );
+
+      paintTodos();
+      showUserData();
+    });
+  } else {
+    btnContainer.innerHTML = `
+       <button class="button button--add--todo">＋ Add Todo</button>
+    `;
+  }
+
+  addTodoBtn = document.querySelector(".button--add--todo");
+  addTodoBtn.addEventListener("click", () =>
+    modalTodoOverlay.classList.add("active")
+  );
+};
+
 const paintTodos = () => {
   const todoBox = document.querySelector(".todo-list");
   todoBox.innerHTML = "";
+
+  displayCompleteAllBtn();
 
   todos.forEach((todo) => {
     const todoHtml = `
@@ -238,6 +324,7 @@ const paintTodos = () => {
         })
       );
 
+      displayCompleteAllBtn();
       showUserData();
     });
   });
